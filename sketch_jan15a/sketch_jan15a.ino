@@ -9,16 +9,20 @@ Servo servo_4;
 Servo servo_5;
 
 // Declare Servo Pins
-int servo_pin_0 = 2;
+int servo_pin_0 = 2; // hand grab
 int servo_pin_1 = 3;
 int servo_pin_2 = 4;
 int servo_pin_3 = 5;
-int servo_pin_4 = 6;
-int servo_pin_5 = 7;
+int servo_pin_4 = 6; // wrist extension
+int servo_pin_5 = 7; // wrist rotation
 
 // Declare Joystick Input Pins and State
-int x_key = A0;
-int y_key = A1;
+// right hand joystick
+int x_key_0 = A0;
+int y_key_0 = A1;
+// lefthand joystick
+int x_key_1 = A2;
+int y_key_1 = A3;
 int switchState;
 int switch_pin = 5;
 int prevSwitchState = HIGH;
@@ -39,12 +43,12 @@ void setup()
   // servo_1.attach(servo_pin_1);
   // servo_2.attach(servo_pin_2);
   // servo_3.attach(servo_pin_3);
-  // servo_4.attach(servo_pin_4);
+  servo_4.attach(servo_pin_4);
   servo_5.attach(servo_pin_5);
 
   // servo_0.write(pos); // Don't override previous position on reboot
-  pinMode(x_key, INPUT);
-  pinMode(y_key, INPUT);
+  pinMode(x_key_0, INPUT);
+  pinMode(y_key_0, INPUT);
   pinMode(switch_pin, INPUT);
   digitalWrite(switch_pin, prevSwitchState);
 }
@@ -52,9 +56,10 @@ void setup()
 void loop()
 {
   // READ JOYSTICK INPUT
+
   switchState = digitalRead(switch_pin);
-  x_pos = analogRead(x_key);
-  y_pos = analogRead(y_key);
+  x_pos = analogRead(x_key_0);
+  y_pos = analogRead(y_key_0);
 
   // CONTROL HAND CLOSING AND OPENING
 
