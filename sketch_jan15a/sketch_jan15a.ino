@@ -16,71 +16,106 @@ int servo_pin_3 = 5;
 int servo_pin_4 = 6;
 int servo_pin_5 = 7;
 
-// Declare Joystick Input Pins
+// Declare Joystick Input Pins and State
 int x_key = A0;
 int y_key = A1;
-int grab;
-int grab_key = 5;
+int switchState;
+int switch_pin = 5;
+int prevSwitchState = HIGH;
 
 // Declare positions
 int x_pos;
 int y_pos;
 int pos = 0;
- 
-void setup() {
+
+// Declare increment angle to control speed of movement
+int increment = 2;
+
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(9600);
   servo_0.attach(servo_pin_0);
-  servo_1.attach(servo_pin_1);
-  servo_2.attach(servo_pin_2);
-  servo_3.attach(servo_pin_3);
-  servo_4.attach(servo_pin_4);
+  // servo_1.attach(servo_pin_1);
+  // servo_2.attach(servo_pin_2);
+  // servo_3.attach(servo_pin_3);
+  // servo_4.attach(servo_pin_4);
   servo_5.attach(servo_pin_5);
-  
-  servo_0.write(pos);
+
+  // servo_0.write(pos); // Don't override previous position on reboot
   pinMode(x_key, INPUT);
   pinMode(y_key, INPUT);
-  pinMode(grab_key, INPUT);
-  digitalWrite(grab_key, HIGH);
+  pinMode(switch_pin, INPUT);
+  digitalWrite(switch_pin, prevSwitchState);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  // READ JOYSTICK INPUT
+  switchState = digitalRead(switch_pin);
   x_pos = analogRead(x_key);
   y_pos = analogRead(y_key);
-  grab = digitalRead(grab_key);
-//  Serial.println(digitalRead(grab_key));
-  delay(10);
 
-  if (grab == LOW) {
-    Serial.println("clicked");
-    if (servo_0.read() < 90) {
-      servo_0.write(90);
-      delay(100);
-    } 
-//    else {
-//      servo_0.write(0);
-//      delay(100);
-//    }
+  // CONTROL HAND CLOSING AND OPENING
 
-  }
-  
-  if (x_pos < 300) {
-    if (pos < 10) {
+  if (switchState == LOW && switchState != prevSwitchState)
+  {
+    if (servo_0.read() < 90)
+    {
+      servo_0.write(170);
     }
-    else {
-      pos = pos - 5;
-      servo_0.write(pos);
-      delay(100);
+    else
+    {
+      servo_0.write(0);
     }
   }
 
-  if (x_pos > 700) {
-    if (pos > 180) {}
-    else {
-      pos = pos + 5;
-      servo_0.write(pos);
-      delay(100);
-    }  
-  }  
+  prevSwitchState = switchState;
+
+  // Wrist servo can continuously rotate, do not need to set constraints on max angles
+  // if (x_pos < 300)
+  // {
+  //   if (pos >= 10)
+  //   {
+  //     pos = pos - 5;
+  //     servo_5.write(pos);
+  //   }
+  // }
+
+  // if (x_pos > 700)
+  // {
+  //   if (pos <= 180)
+  //   {
+  //     pos = pos + 5;
+  //     servo_5.write(pos);
+  //   }
+  // }
+
+  // CONTROL WRIST ROTATION
+  if (x_pos < 300)
+  {
+    if (pos >= increment)
+    {
+      pos = pos - increment;
+    }
+    else
+    {
+      pos = 0;
+    }
+    servo_5.write(pos);
+    delay(50);
+  }
+  if (x_pos > 700)
+  {
+    if (pos <= 180 - increment)
+    {
+      pos = pos + increment;
+    }
+    else
+    {
+      pos = 180;
+    }
+    servo_5.write(pos);
+    delay(50);
+  }
 }
