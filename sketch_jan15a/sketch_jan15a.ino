@@ -1,28 +1,28 @@
 #include <Servo.h>
 
 // Initialize Servos
-Servo servo_0;
-Servo servo_1;
-Servo servo_2;
-Servo servo_3;
-Servo servo_4;
-Servo servo_5;
+Servo hand;
+Servo base;
+Servo extension_1;
+Servo extension_2;
+Servo extension_3;
+Servo wrist;
 
 // DECLARE SERVO PINS
-int servo_pin_0 = 2; // hand grab
-int servo_pin_1 = 3;
-int servo_pin_2 = 4;
-int servo_pin_3 = 5;
-int servo_pin_4 = 6; // wrist extension
-int servo_pin_5 = 7; // wrist rotation
+int hand_pin = 2; // hand grab
+int base_pin = 3;
+int extension_1_pin = 4;
+int extension_2_pin = 5;
+int extension_3_pin = 6; // wrist extension
+int wrist_pin = 7;       // wrist rotation
 
 // DECLARE JOYSTICK PINS AND STATE
 // right hand joystick
-int x_key_0 = A0;
-int y_key_0 = A1;
+int y_key_0 = A0;
+int x_key_0 = A1;
 // lefthand joystick
-// int x_key_1 = A2;
-// int y_key_1 = A3;
+// int y_key_0 = A2;
+// int x_key_0 = A3;
 int switchState;
 int switch_pin = 5;
 int prevSwitchState = HIGH;
@@ -42,20 +42,20 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  servo_0.attach(servo_pin_0);
-  // servo_1.attach(servo_pin_1);
-  // servo_2.attach(servo_pin_2);
-  // servo_3.attach(servo_pin_3);
-  // servo_4.attach(servo_pin_4);
-  servo_5.attach(servo_pin_5);
+  hand.attach(hand_pin);
+  // extension_1.attach(base_pin);
+  // extension_2.attach(extension_1_pin);
+  // extension_3.attach(extension_2_pin);
+  // base.attach(extension_3_pin);
+  wrist.attach(wrist_pin);
 
-  // servo_0.write(pos); // Don't override previous position on reboot
-  pinMode(x_key_0, INPUT);
+  // hand.write(pos); // Don't override previous position on reboot
   pinMode(y_key_0, INPUT);
+  pinMode(x_key_0, INPUT);
   pinMode(switch_pin, INPUT);
   digitalWrite(switch_pin, prevSwitchState);
-  // pinMode(x_key_1, INPUT);
-  // pinMode(y_key_1, INPUT);
+  // pinMode(y_key_0, INPUT);
+  // pinMode(x_key_0, INPUT);
 }
 
 void loop()
@@ -63,22 +63,22 @@ void loop()
   // READ JOYSTICK INPUT
 
   switchState = digitalRead(switch_pin);
-  x_pos_0 = analogRead(x_key_0);
-  y_pos_0 = analogRead(y_key_0);
+  x_pos_0 = analogRead(y_key_0);
+  y_pos_0 = analogRead(x_key_0);
 
-  // x_pos_1 = analogRead(x_key_1);
-  // y_pos_1 = analogRead(y_key_1);
+  // x_pos_1 = analogRead(y_key_0);
+  // y_pos_1 = analogRead(x_key_0);
 
   // CONTROL HAND CLOSING AND OPENING
   // if (switchState == LOW && switchState != prevSwitchState)
   // {
-  //   if (servo_0.read() < 90)
+  //   if (hand.read() < 90)
   //   {
-  //     servo_0.write(170);
+  //     hand.write(170);
   //   }
   //   else
   //   {
-  //     servo_0.write(0);
+  //     hand.write(0);
   //   }
   // }
   // prevSwitchState = switchState;
@@ -96,7 +96,7 @@ void loop()
   // {
   //   pos_1 = 0;
   // }
-  // servo_4.write(pos_1);
+  // base.write(pos_1);
   // delay(50);
   // }
   // if (x_pos_1 > 700)
@@ -109,7 +109,7 @@ void loop()
   // {
   //   pos_1 = 180;
   // }
-  // servo_4.write(pos_1);
+  // base.write(pos_1);
   // delay(50);
   // }
 
@@ -124,7 +124,7 @@ void loop()
   //   {
   //     pos_0 = 0;
   //   }
-  //   servo_5.write(pos_0);
+  //   wrist.write(pos_0);
   //   delay(50);
   // }
   // if (x_pos_0 > 700)
@@ -137,7 +137,7 @@ void loop()
   //   {
   //     pos_0 = 180;
   //   }
-  //   servo_5.write(pos_0);
+  //   wrist.write(pos_0);
   //   delay(50);
   // }
 }
