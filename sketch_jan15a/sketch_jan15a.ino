@@ -1,32 +1,39 @@
 #include <Servo.h>
 
 // Initialize Servos
-Servo servo_0;
-Servo servo_1;
-Servo servo_2;
-Servo servo_3;
-Servo servo_4;
-Servo servo_5;
+Servo hand;
+Servo base;
+Servo extension_1;
+Servo extension_2;
+Servo extension_3;
+Servo wrist;
 
-// Declare Servo Pins
-int servo_pin_0 = 2;
-int servo_pin_1 = 3;
-int servo_pin_2 = 4;
-int servo_pin_3 = 5;
-int servo_pin_4 = 6;
-int servo_pin_5 = 7;
+// DECLARE SERVO PINS
+int hand_pin = 2; // hand grab
+int base_pin = 3;
+int extension_1_pin = 4;
+int extension_2_pin = 5;
+int extension_3_pin = 6; // wrist extension
+int wrist_pin = 7;       // wrist rotation
 
-// Declare Joystick Input Pins and State
-int x_key = A0;
-int y_key = A1;
+// DECLARE JOYSTICK PINS AND STATE
+// right hand joystick
+int y_key_0 = A0;
+int x_key_0 = A1;
+// lefthand joystick
+// int y_key_0 = A2;
+// int x_key_0 = A3;
 int switchState;
 int switch_pin = 5;
 int prevSwitchState = HIGH;
 
 // Declare positions
-int x_pos;
-int y_pos;
-int pos = 0;
+int x_pos_0;
+int y_pos_0;
+int x_pos_1;
+int y_pos_1;
+int pos_0 = 0;
+int pos_1 = 90;
 
 // Declare increment angle to control speed of movement
 int increment = 2;
@@ -35,87 +42,102 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  servo_0.attach(servo_pin_0);
-  // servo_1.attach(servo_pin_1);
-  // servo_2.attach(servo_pin_2);
-  // servo_3.attach(servo_pin_3);
-  // servo_4.attach(servo_pin_4);
-  servo_5.attach(servo_pin_5);
+  hand.attach(hand_pin);
+  // extension_1.attach(base_pin);
+  // extension_2.attach(extension_1_pin);
+  // extension_3.attach(extension_2_pin);
+  // base.attach(extension_3_pin);
+  wrist.attach(wrist_pin);
 
-  // servo_0.write(pos); // Don't override previous position on reboot
-  pinMode(x_key, INPUT);
-  pinMode(y_key, INPUT);
+  // hand.write(pos); // Don't override previous position on reboot
+  pinMode(y_key_0, INPUT);
+  pinMode(x_key_0, INPUT);
   pinMode(switch_pin, INPUT);
   digitalWrite(switch_pin, prevSwitchState);
+  // pinMode(y_key_0, INPUT);
+  // pinMode(x_key_0, INPUT);
 }
 
 void loop()
 {
   // READ JOYSTICK INPUT
+
   switchState = digitalRead(switch_pin);
-  x_pos = analogRead(x_key);
-  y_pos = analogRead(y_key);
+  x_pos_0 = analogRead(y_key_0);
+  y_pos_0 = analogRead(x_key_0);
+
+  // x_pos_1 = analogRead(y_key_0);
+  // y_pos_1 = analogRead(x_key_0);
 
   // CONTROL HAND CLOSING AND OPENING
-
-  if (switchState == LOW && switchState != prevSwitchState)
-  {
-    if (servo_0.read() < 90)
-    {
-      servo_0.write(170);
-    }
-    else
-    {
-      servo_0.write(0);
-    }
-  }
-
-  prevSwitchState = switchState;
-
-  // Wrist servo can continuously rotate, do not need to set constraints on max angles
-  // if (x_pos < 300)
+  // if (switchState == LOW && switchState != prevSwitchState)
   // {
-  //   if (pos >= 10)
+  //   if (hand.read() < 90)
   //   {
-  //     pos = pos - 5;
-  //     servo_5.write(pos);
+  //     hand.write(170);
+  //   }
+  //   else
+  //   {
+  //     hand.write(0);
   //   }
   // }
+  // prevSwitchState = switchState;
 
-  // if (x_pos > 700)
+  Serial.println(y_pos_0);
+  delay(100);
+  // CONTROL WRIST EXTENSION
+  // if (x_pos_1 < 300)
   // {
-  //   if (pos <= 180)
-  //   {
-  //     pos = pos + 5;
-  //     servo_5.write(pos);
-  //   }
+  // if (pos_1 >= increment)
+  // {
+  //   pos_1 = pos_1 - increment;
+  // }
+  // else
+  // {
+  //   pos_1 = 0;
+  // }
+  // base.write(pos_1);
+  // delay(50);
+  // }
+  // if (x_pos_1 > 700)
+  // {
+  // if (pos_1 <= 180 - increment)
+  // {
+  //   pos_1 = pos_1 + increment;
+  // }
+  // else
+  // {
+  //   pos_1 = 180;
+  // }
+  // base.write(pos_1);
+  // delay(50);
   // }
 
   // CONTROL WRIST ROTATION
-  if (x_pos < 300)
-  {
-    if (pos >= increment)
-    {
-      pos = pos - increment;
-    }
-    else
-    {
-      pos = 0;
-    }
-    servo_5.write(pos);
-    delay(50);
-  }
-  if (x_pos > 700)
-  {
-    if (pos <= 180 - increment)
-    {
-      pos = pos + increment;
-    }
-    else
-    {
-      pos = 180;
-    }
-    servo_5.write(pos);
-    delay(50);
-  }
+  // if (x_pos_0 < 300)
+  // {
+  //   if (pos_0 >= increment)
+  //   {
+  //     pos_0 = pos_0 - increment;
+  //   }
+  //   else
+  //   {
+  //     pos_0 = 0;
+  //   }
+  //   wrist.write(pos_0);
+  //   delay(50);
+  // }
+  // if (x_pos_0 > 700)
+  // {
+  //   if (pos_0 <= 180 - increment)
+  //   {
+  //     pos_0 = pos_0 + increment;
+  //   }
+  //   else
+  //   {
+  //     pos_0 = 180;
+  //   }
+  //   wrist.write(pos_0);
+  //   delay(50);
+  // }
 }
